@@ -1,17 +1,9 @@
-# IntelliJ / IDE
 .idea/
 *.iml
-*.ipr
-*.iws
-
-# VS Code
 .vscode/
-
-# Java / Maven / Gradle outputs
 **/target/
 **/build/
 *.class
 
-# OS files
 .DS_Store
 Thumbs.db
