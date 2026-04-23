@@ -18,7 +18,7 @@ public class Order {
     private BigDecimal totalAmount;
 
     private LocalDateTime createdAt;
-
+    private String status;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private List<OrderItem> items;
@@ -53,7 +53,9 @@ public class Order {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
+    public String getStatus(){
+        return status;
+    }
     public List<OrderItem> getItems() {
         return items;
     }
@@ -62,7 +64,9 @@ public class Order {
     public void setId(Long id) {
         this.id = id;
     }
-
+public void setStatus(String status){
+    this.status = status;
+}
     public void setUserId(String userId) {
         this.userId = userId;
     }
