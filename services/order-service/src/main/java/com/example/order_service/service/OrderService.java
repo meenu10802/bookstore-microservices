@@ -7,6 +7,7 @@ import com.example.order_service.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,5 +52,14 @@ public class OrderService {
     public Order getOrder(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+    }
+    public List<Order> getAllOrders() {
+        return repository.findAll();
+    }
+
+    public Order updateStatus(Long id, String status) {
+        Order order = repository.findById(id).orElseThrow();
+        order.setStatus(status);
+        return repository.save(order);
     }
 }
