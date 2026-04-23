@@ -12,12 +12,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+                //  CSRF not needed for REST APIs
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login", "/api/users/health", "/error").permitAll()
-                        .anyRequest().authenticated()
+                //  No session JWT-based auth is stateless
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .build();
+                // Authorization rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/users/register",
+                                "/api/users/login",
+                                "/api/users/health",
+                                "/api/users/profile",
+                                "/api/users/change-password"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                ).build();
     }
 }
