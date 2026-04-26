@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Cart Service (8084)" type="MavenRunConfiguration" factoryName="Maven">
+    <option name="myGeneralSettings" />
+    <option name="myRunnerSettings" />
+    <option name="myRunnerParameters">
+      <MavenRunnerParameters>
+        <option name="cmdOptions" value="-Dspring-boot.run.arguments=--spring.application.name=cart-service --server.port=8084" />
+        <option name="profilesMap">
+          <map />
+        </option>
+        <option name="goals">
+          <list>
+            <option value="spring-boot:run" />
+          </list>
+        </option>
+        <option name="pomFileName" value="$PROJECT_DIR$/services/cart-service/pom.xml" />
+        <option name="workingDirPath" value="$PROJECT_DIR$/services/cart-service" />
+      </MavenRunnerParameters>
+    </option>
+    <method v="2" />
+  </configuration>
+</component>
