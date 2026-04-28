@@ -1,11 +1,21 @@
 package com.example.order_service.config;
 
+<<<<<<< HEAD
 import com.example.order_service.event.OrderEvent;
+=======
+
+>>>>>>> feature/notification-service
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+<<<<<<< HEAD
 import org.springframework.kafka.core.*;
+=======
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+>>>>>>> feature/notification-service
 
 import java.util.HashMap;
 import java.util.Map;

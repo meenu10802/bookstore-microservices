@@ -3,7 +3,9 @@ package com.example.order_service.service;
 import com.example.order_service.client.CartClient;
 import com.example.order_service.entity.Order;
 import com.example.order_service.entity.OrderItem;
+import com.example.order_service.event.OrderEvent;
 import com.example.order_service.repository.OrderRepository;
+import com.example.order_service.service.OrderProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class OrderService {
 
     @Autowired
     private OrderRepository repository;
+
+    @Autowired
+    private OrderProducer orderProducer; // ← ADD THIS
 
     public Order placeOrder(String userId) {
 
@@ -46,6 +51,14 @@ public class OrderService {
 
         cartClient.clearCart(userId);
 
+        // ← ADD THIS — send Kafka event after order is saved
+        orderProducer.sendOrderEvent(new OrderEvent(
+                "ORDER_PLACED",
+                userId,
+                saved.getId(),
+                null  // replace null with email if you have it
+        ));
+
         return saved;
     }
 
@@ -53,6 +66,7 @@ public class OrderService {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
     }
+
     public List<Order> getAllOrders() {
         return repository.findAll();
     }
@@ -60,6 +74,17 @@ public class OrderService {
     public Order updateStatus(Long id, String status) {
         Order order = repository.findById(id).orElseThrow();
         order.setStatus(status);
-        return repository.save(order);
+
+        Order updated = repository.save(order);
+
+        // ← ADD THIS — send Kafka event when status changes
+        orderProducer.sendOrderEvent(new OrderEvent(
+                updated.getStatus(),  // "ORDER_SHIPPED" or "ORDER_DELIVERED"
+                updated.getUserId(),
+                updated.getId(),
+                null
+        ));
+
+        return updated;
     }
 }
