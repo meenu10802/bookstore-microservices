@@ -73,8 +73,25 @@ public class UserController {
         }
         return userService.getAllUsers();
     }
+    @PostMapping("/register-super-admin")
+    public String registerSuperAdmin(@RequestBody UserRequest request) {
+        return userService.registerSuperAdmin(request);
+    }
     @GetMapping("/health")
     public String health() {
         return "User service is up";
+    }
+    @PostMapping("/register-admin")
+    public String registerAdmin(@RequestHeader("Authorization") String token,
+                                @RequestBody UserRequest request) {
+
+        String email = jwtUtil.extractUsername(token.substring(7));
+        User user = userService.getProfile(email);
+
+        if (!user.getRole().equals(Role.SUPER_ADMIN)) {
+            throw new RuntimeException("Access denied. Super admin only.");
+        }
+
+        return userService.registerAdmin(request);
     }
 }

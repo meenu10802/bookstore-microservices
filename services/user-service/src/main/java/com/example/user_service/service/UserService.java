@@ -86,4 +86,28 @@ public class UserService {
         userRepository.deleteById(id);
         return "User deleted";
     }
+    public String registerSuperAdmin(UserRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(encoder.encode(request.getPassword()));
+        user.setRole(Role.SUPER_ADMIN);
+        userRepository.save(user);
+        return "Super Admin Registered";
+    }
+    public String registerAdmin(UserRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(encoder.encode(request.getPassword()));
+        user.setRole(Role.ADMIN);
+
+        userRepository.save(user);
+        return "Admin Registered";
+    }
 }
