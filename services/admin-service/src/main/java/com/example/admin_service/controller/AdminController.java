@@ -10,7 +10,7 @@ import com.example.admin_service.client.UserServiceClient;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+        @RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
     private UserServiceClient userClient;

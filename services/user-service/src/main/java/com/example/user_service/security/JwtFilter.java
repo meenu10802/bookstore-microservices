@@ -1,5 +1,4 @@
-package com.example.admin_service.security;
-
+package com.example.user_service.security;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-//instead of manually extracting the user from JWT in every controller, this filter does it once per request automatically
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -28,34 +27,22 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
-        System.out.println("=== JWT FILTER RUNNING ===");
-        System.out.println("Header: " + header);
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            try {
+            if (!jwtUtil.isTokenExpired(token)) {
                 String email = jwtUtil.extractUsername(token);
                 String role = jwtUtil.extractRole(token);
-                boolean expired = jwtUtil.isTokenExpired(token);
 
-                System.out.println("Email: " + email);
-                System.out.println("Role: " + role);
-                System.out.println("Expired: " + expired);
+                List<GrantedAuthority> authorities =
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-                if (!expired) {
-                    List<GrantedAuthority> authorities =
-                            List.of(new SimpleGrantedAuthority("ROLE_" + role));
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(email, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                    System.out.println("Authentication set successfully");
-                }
-            } catch (Exception e) {
-                System.out.println("JWT ERROR: " + e.getMessage());
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(email, null, authorities);
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } else {
-            System.out.println("No Bearer token found");
         }
 
         filterChain.doFilter(request, response);

@@ -8,6 +8,9 @@ import com.example.user_service.security.JwtUtil;
 import com.example.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -61,7 +64,15 @@ public class UserController {
 
         return userService.deleteUser(id);
     }
-
+    @GetMapping
+    public List<User> getAllUsers(@RequestHeader("Authorization") String token) {
+        String email = jwtUtil.extractUsername(token.substring(7));
+        User user = userService.getProfile(email);
+        if (!user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("Access denied");
+        }
+        return userService.getAllUsers();
+    }
     @GetMapping("/health")
     public String health() {
         return "User service is up";
