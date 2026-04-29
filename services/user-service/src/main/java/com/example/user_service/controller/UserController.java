@@ -8,6 +8,9 @@ import com.example.user_service.security.JwtUtil;
 import com.example.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -25,13 +28,13 @@ public class UserController {
         return userService.login(request);
     }
 
-//here in each controller we are manually reading the JWT token and extracting the user’s user or email
+    //here in each controller we are manually reading the JWT token and extracting the user’s user or email
 //Instead of letting Spring Security automatically identify the logged-in user,
     @GetMapping("/profile")
     public User getProfile(@RequestHeader("Authorization") String token) {
         String email = jwtUtil.extractUsername(token.substring(7));
         return userService.getProfile(email); //the start index is from 7 because first 6 letters are
-                                            //the word BEARER
+        //the word BEARER
     }
 
     @PutMapping("/profile")
@@ -61,7 +64,15 @@ public class UserController {
 
         return userService.deleteUser(id);
     }
-
+    @GetMapping
+    public List<User> getAllUsers(@RequestHeader("Authorization") String token) {
+        String email = jwtUtil.extractUsername(token.substring(7));
+        User user = userService.getProfile(email);
+        if (!user.getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("Access denied");
+        }
+        return userService.getAllUsers();
+    }
     @GetMapping("/health")
     public String health() {
         return "User service is up";
