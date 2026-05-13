@@ -8,10 +8,12 @@ public class Admin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String password;
 
+    @Enumerated(EnumType.STRING)
+    private AdminRole role;
     private String name;
     private String email;
-    private String role;
 
     public Admin() {}
 
